@@ -139,4 +139,12 @@ def get_windows_security_details():
     for fw in c.Win32_FirewallProduct():
         security_details["firewall_enabled"] = fw.Enabled
 
+    # Get Encryption details
+    for enc in c.Win32_EncryptableVolume():
+        enc_info = {
+            "device_id": enc.DeviceID,
+            "protection_status": enc.ProtectionStatus,
+        }
+        security_details.setdefault("encryption_volumes", []).append(enc_info)
+
     return security_details

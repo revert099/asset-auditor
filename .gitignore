@@ -9,3 +9,6 @@ venv/
 
 # macOS
 .DS_Store
+
+# results
+results/

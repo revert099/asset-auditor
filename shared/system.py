@@ -2,6 +2,7 @@
     Shared utility functions for system information retrieval.
 """
 import platform
+import psutil
 
 def get_system_info():
     """Retrieve basic system information."""
@@ -25,3 +26,7 @@ def get_os():
         "Darwin": "This is macOS",
     }
     return switcher.get(operating_system, "Unknown Operating System")
+
+def get_user_information():
+    """ Retrieve all user information"""
+    return psutil.users()
