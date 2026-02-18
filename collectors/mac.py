@@ -23,7 +23,6 @@ def run_cmd(cmd: list[str], timeout_s: int = 10) -> tuple[int, str, str]:
     We capture output so we can store it in the AuditResult.evidence field
     for transparency/debugging (useful for client reports too).
     """
-    import subprocess
 
     p = subprocess.run(
         cmd,

@@ -2,12 +2,12 @@
     Main entry point for the Asset Auditing tool
 """
 from shared.system import get_system_info, get_os, get_user_information
-from shared.hardware import get_cpu_info, get_disk_info, get_battery_info
+from shared.hardware import get_hardware_info, get_cpu_info, get_disk_info, get_battery_info
 from collectors.mac import get_mac_network_info, check_mac_firewall_status, check_mac_filevault_status
 from reports.formatter import print_disk_info
 from core.report import write_json_report
 
-from shared.network import get_net_addr
+from shared.network import get_net_addr, get_listening_ports
 
 import os, pwd, subprocess
 
@@ -17,9 +17,11 @@ def main():
         Right now using it to test individual collectors.
     """
 
-    print(get_net_addr())
+    print(get_listening_ports())
 
-    system_info = get_system_info()
+    print(get_hardware_info())
+
+    """system_info = get_system_info()
     print("\nSystem Information:")
     for key, value in system_info.items():
         print(f"{key}: {value}")
@@ -53,7 +55,7 @@ def main():
 
     json_path = write_json_report(report, "results/audit_report.json")
     print(f"Wrote {json_path}")
-
+    """
     
 
 if __name__ == "__main__":
