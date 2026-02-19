@@ -8,31 +8,11 @@ import objc  # used for macOS-specific system calls
 import SystemConfiguration
 import Security
 from core.models import AuditResult, Finding
+from helpers.unix import run_cmd
 
 import subprocess
 
 SFW = "/usr/libexec/ApplicationFirewall/socketfilterfw" # directory to socketfilterfw binary
-
-def run_cmd(cmd: list[str], timeout_s: int = 10) -> tuple[int, str, str]:
-    """
-    Run a command and return:
-      - return code (rc)
-      - stdout (string)
-      - stderr (string)
-
-    We capture output so we can store it in the AuditResult.evidence field
-    for transparency/debugging (useful for client reports too).
-    """
-
-    p = subprocess.run(
-        cmd,
-        text=True,              # decode output to str instead of bytes
-        capture_output=True,    # capture stdout/stderr
-        timeout=timeout_s
-    )
-
-    # Normalise None → "" and strip whitespace
-    return p.returncode, (p.stdout or "").strip(), (p.stderr or "").strip()
 
 def _parse_state(output: str) -> int | None:
     """
@@ -54,7 +34,6 @@ def _parse_state(output: str) -> int | None:
     if "State = 2" in output:
         return 2
     return None
-
 
 def _parse_on_off(output: str) -> bool | None:
     """

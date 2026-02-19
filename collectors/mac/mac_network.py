@@ -1,4 +1,4 @@
-from collectors.mac import run_cmd
+from helpers.unix import run_cmd, get_evidence
 from typing import Any
 
 def get_mac_default_route() -> dict[str, Any]:
@@ -6,14 +6,10 @@ def get_mac_default_route() -> dict[str, Any]:
     macOS: default route (gateway + primary interface) via `route -n get default`.
     Returns a JSON-friendly dict with parsed fields + evidence.
     """
-    rc, stdout, stderr = run_cmd(["route", "-n", "get", "default"])
+    cmd = ["route", "-n", "get", "default"]
+    rc, stdout, stderr = run_cmd(cmd)
 
-    evidence = {
-        "cmd": "route -n get default",
-        "rc": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-    }
+    evidence = get_evidence(" ".join(cmd), rc, stderr, stdout)
 
     if rc != 0:
         return {
@@ -55,14 +51,10 @@ def get_mac_dns_config() -> dict[str, Any]:
     macOS DNS resolver inventory via `scutil --dns`.
     Returns nameservers + search domains (deduped, order-preserving) plus evidence.
     """
-    rc, stdout, stderr = run_cmd(["scutil", "--dns"])
+    cmd = ["scutil", "--dns"]
+    rc, stdout, stderr = run_cmd(cmd)
 
-    evidence = {
-        "cmd": "scutil --dns",
-        "rc": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-    }
+    evidence = get_evidence(" ".join(cmd), rc, stderr, stdout)
 
     if rc != 0:
         return {
@@ -114,14 +106,10 @@ def get_mac_proxy_config() -> dict[str, Any]:
       - exceptions list (best-effort)
       - evidence (cmd/rc/stdout/stderr)
     """
-    rc, stdout, stderr = run_cmd(["scutil", "--proxy"])
+    cmd = ["scutil", "--proxy"]
+    rc, stdout, stderr = run_cmd(cmd)
 
-    evidence = {
-        "cmd": "scutil --proxy",
-        "rc": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-    }
+    evidence = get_evidence(" ".join(cmd), rc, stderr, stdout)
 
     if rc != 0:
         return {
